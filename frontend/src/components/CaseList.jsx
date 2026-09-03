@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_BASE } from '../api'
 
 export default function CaseList() {
   const [cases, setCases] = useState([])
@@ -17,7 +18,7 @@ export default function CaseList() {
   const fetchCases = async () => {
     setLoading(true)
     try {
-      const response = await axios.get('/api/cases?limit=100')
+      const response = await axios.get(`${API_BASE}/api/cases?limit=100`)
       setCases(response.data)
     } catch (err) {
       console.error('Failed to fetch cases:', err)
@@ -29,7 +30,7 @@ export default function CaseList() {
   const fetchAuditTrail = async (caseId) => {
     setLoadingAudit(true)
     try {
-      const response = await axios.get(`/api/cases/${caseId}/audit`)
+      const response = await axios.get(`${API_BASE}/api/cases/${caseId}/audit`)
       setAuditTrail(response.data)
     } catch (err) {
       console.error('Failed to fetch audit trail:', err)
@@ -42,7 +43,7 @@ export default function CaseList() {
   const fetchPromises = async (caseId) => {
     setLoadingPromises(true)
     try {
-      const response = await axios.get(`/api/cases/${caseId}/promises`)
+      const response = await axios.get(`${API_BASE}/api/cases/${caseId}/promises`)
       setPromises(response.data || [])
     } catch (err) {
       console.error('Failed to fetch promises:', err)

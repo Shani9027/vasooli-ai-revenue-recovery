@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { API_BASE } from '../api'
 
 export default function Dashboard({ batchId }) {
   const [batchInfo, setBatchInfo] = useState(null)
@@ -13,7 +14,8 @@ export default function Dashboard({ batchId }) {
   const fetchBatchInfo = async () => {
     setLoading(true)
     try {
-      const response = await fetch(`/api/batches/${batchId}`)
+      const response = await fetch(`${API_BASE}/api/batches/${batchId}`)
+      if (!response.ok) return
       const data = await response.json()
       setBatchInfo(data)
     } catch (err) {

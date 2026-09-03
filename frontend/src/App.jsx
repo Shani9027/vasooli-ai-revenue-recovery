@@ -4,6 +4,7 @@ import Dashboard from './components/Dashboard'
 import CaseList from './components/CaseList'
 import MetricsPanel from './components/MetricsPanel'
 import Comparison from './components/Comparison'
+import { API_BASE } from './api'
 
 function App() {
   const [batchId, setBatchId] = useState(null)
@@ -17,11 +18,24 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      const response = await fetch('/api/batches/create', {
+      const response = await fetch(`${API_BASE}/api/batches/create`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ num_invoices: 100, run_type: 'VASOOLI' })
       })
+      if (!response.ok) {
+        const errorText = await response.text()
+        let errorMessage = `Server error (${response.status})`
+        try {
+          const parsed = JSON.parse(errorText)
+          if (parsed.detail) {
+            errorMessage = typeof parsed.detail === 'string' ? parsed.detail : JSON.stringify(parsed.detail)
+          }
+        } catch (_) {
+          if (errorText) errorMessage = errorText
+        }
+        throw new Error(errorMessage)
+      }
       const data = await response.json()
       setBatchId(data.batch_id)
       setRecoveryStatus(null)
@@ -41,9 +55,13 @@ function App() {
     setRecoveryInProgress(true)
     setRecoveryStatus('Running Vasooli recovery...')
     try {
-      const response = await fetch(`/api/batches/${batchId}/vasooli-recovery`, {
+      const response = await fetch(`${API_BASE}/api/batches/${batchId}/vasooli-recovery`, {
         method: 'POST'
       })
+      if (!response.ok) {
+        const errText = await response.text()
+        throw new Error(errText || `Server returned ${response.status}`)
+      }
       const data = await response.json()
       setRecoveryStatus(`✅ Vasooli complete: ${data.successful}/${data.total_cases} cases recovered ₹${(data.revenue_recovered / 100000).toFixed(2)}L`)
     } catch (err) {
@@ -57,9 +75,13 @@ function App() {
     setRecoveryInProgress(true)
     setRecoveryStatus('Running baseline recovery...')
     try {
-      const response = await fetch(`/api/batches/${batchId || 'default'}/baseline-recovery`, {
+      const response = await fetch(`${API_BASE}/api/batches/${batchId || 'default'}/baseline-recovery`, {
         method: 'POST'
       })
+      if (!response.ok) {
+        const errText = await response.text()
+        throw new Error(errText || `Server returned ${response.status}`)
+      }
       const data = await response.json()
       setRecoveryStatus(`✅ Baseline complete: ${data.successful}/${data.total_cases} cases recovered ₹${(data.revenue_recovered / 100000).toFixed(2)}L`)
       setView('comparison')
@@ -74,7 +96,11 @@ function App() {
     setLoading(true)
     setError(null)
     try {
-      await fetch('/api/admin/reset', { method: 'POST' })
+      const response = await fetch(`${API_BASE}/api/admin/reset`, { method: 'POST' })
+      if (!response.ok) {
+        const errText = await response.text()
+        throw new Error(errText || `Server returned ${response.status}`)
+      }
       setBatchId(null)
       setRecoveryStatus(null)
       setError(null)

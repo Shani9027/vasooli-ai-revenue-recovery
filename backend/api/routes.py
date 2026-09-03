@@ -34,7 +34,7 @@ def _generate_id(prefix: str) -> str:
 # BATCH MANAGEMENT ENDPOINTS
 
 @router.post("/batches/create", response_model=BatchCreateResponse)
-def create_batch(request: BatchCreateRequest, db: Session = Depends(get_db)):
+def create_batch(request: BatchCreateRequest = BatchCreateRequest(), db: Session = Depends(get_db)):
     """Create and seed a new batch of synthetic invoices with an immutable baseline snapshot"""
     
     try:

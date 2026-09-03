@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
+import { API_BASE } from '../api'
 
 export default function MetricsPanel() {
   const [metrics, setMetrics] = useState(null)
@@ -12,7 +13,8 @@ export default function MetricsPanel() {
   const fetchMetrics = async () => {
     setLoading(true)
     try {
-      const response = await fetch('/api/metrics/summary')
+      const response = await fetch(`${API_BASE}/api/metrics/summary`)
+      if (!response.ok) return
       const data = await response.json()
       setMetrics(data)
     } catch (err) {

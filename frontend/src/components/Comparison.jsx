@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { API_BASE } from '../api'
 
 export default function Comparison() {
   const [comparison, setComparison] = useState(null)
@@ -13,7 +14,7 @@ export default function Comparison() {
   const fetchComparison = async () => {
     try {
       setLoading(true)
-      const response = await axios.get('/api/metrics/comparison')
+      const response = await axios.get(`${API_BASE}/api/metrics/comparison`)
       setComparison(response.data)
       setError(null)
     } catch (err) {
