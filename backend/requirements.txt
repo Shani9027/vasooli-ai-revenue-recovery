@@ -1,0 +1,13 @@
+fastapi==0.115.0
+uvicorn==0.30.0
+sqlalchemy==2.0.31
+python-dotenv==1.0.1
+pytest==8.0.0
+pytest-asyncio==0.24.0
+pydantic==2.10.2
+pydantic-settings==2.2.1
+razorpay>=2.0.0
+
+# Optional: LLM providers (remove if using mock mode)
+# google-generativeai==0.3.0
+# anthropic==0.18.0
