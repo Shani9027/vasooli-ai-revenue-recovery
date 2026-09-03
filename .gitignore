@@ -41,3 +41,5 @@ dist/
 
 frontend/dist/
 frontend/node_modules/
+
+backend/audit.jsonl
